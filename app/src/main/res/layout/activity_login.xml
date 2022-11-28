@@ -6,8 +6,6 @@
     android:orientation="vertical"
     android:layout_margin="20dp"
     >
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_user_login_username"
         android:layout_width="match_parent"
@@ -42,8 +40,6 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
-
     <Button
         android:id="@+id/button_user_login"
         android:layout_width="match_parent"
@@ -65,8 +61,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Staff? Click here to Signup"/>
-
-
-
 
 </LinearLayout>
