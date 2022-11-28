@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    >
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout_user_login_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_text_user_login_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username (Email address)"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_layout_user_login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_text_user_login_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_margin="10dp"
+            android:background="@color/white"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <Button
+        android:id="@+id/button_user_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="login"
+        android:text="login"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/text_view_user_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New user? Click here to Signup"
+        android:layout_margin="24dp"
+
+        />
+    <TextView
+        android:id="@+id/text_view_staff_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Staff? Click here to Signup"/>
+
+
+
+
+</LinearLayout>
