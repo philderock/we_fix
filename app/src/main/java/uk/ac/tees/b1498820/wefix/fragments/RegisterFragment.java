@@ -1,66 +1,119 @@
 package uk.ac.tees.b1498820.wefix.fragments;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Locale;
 
 import uk.ac.tees.b1498820.wefix.R;
+import uk.ac.tees.b1498820.wefix.activities.NavigationActivity;
+import uk.ac.tees.b1498820.wefix.databinding.FragmentRegisterBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegisterFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RegisterFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    FragmentRegisterBinding binding;
+    FirebaseAuth firebaseAuth;
+    View view;
+    String email = "", password = "";
+    ProgressDialog progressDialog;
 
     public RegisterFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RegisterFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RegisterFragment newInstance(String param1, String param2) {
+    public static RegisterFragment newInstance() {
         RegisterFragment fragment = new RegisterFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        //initialize firebase
+        firebaseAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Please wait");
+        progressDialog.setMessage("Creating your account...");
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        //initialize view binding
+        binding = FragmentRegisterBinding.inflate(getLayoutInflater());
+
+        //set register button onclick event
+        binding.btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateData();
+            }
+        });
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        view = binding.getRoot();
+        return view;
+    }
+
+    void validateData(){
+        email = binding.etEmail.getText().toString().trim();
+        password = binding.etPassword.getText().toString().trim();
+        //validate
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            binding.etEmail.setError("Invalid email address format");
+        }else if (TextUtils.isEmpty(password)){
+            binding.etPassword.setError("Enter password");
+        }else if (password.length() < 6){
+            binding.etPassword.setError("Password must be at least 6 characters");
+        }else{
+            SignUp();
+        }
+
+    }
+
+    private void SignUp() {
+        progressDialog.show();
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        //success
+                        progressDialog.dismiss();
+                        //get user info
+                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                        String email = firebaseUser.getEmail();
+                        Toast.makeText(getContext(), "Account created\n"+email, Toast.LENGTH_SHORT).show();
+
+                        startActivity(new Intent(getActivity(), NavigationActivity.class));
+                        getActivity().finish();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //failure
+                        Toast.makeText(getContext(), "Error : "+e.getMessage(), Toast.LENGTH_LONG).show();
+
+                    }
+                });
     }
 }

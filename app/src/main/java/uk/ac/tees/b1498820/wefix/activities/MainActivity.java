@@ -33,12 +33,9 @@ View view;
         viewPager.setAdapter(pagerAdapter);
 
 //      set handler to run task for specific time interval
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                pagerAdapter.removeFragment(0);
-                viewPager.setAdapter(pagerAdapter);
-            }
+        new Handler().postDelayed(() -> {
+            pagerAdapter.removeFragment(0);
+            viewPager.setAdapter(pagerAdapter);
         }, 2000);
     }
 }
