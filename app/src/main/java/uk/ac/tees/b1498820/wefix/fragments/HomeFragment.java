@@ -1,4 +1,4 @@
-package uk.ac.tees.b1498820.wefix.activities.ui.slideshow;
+package uk.ac.tees.b1498820.wefix.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,23 +9,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import uk.ac.tees.b1498820.wefix.databinding.FragmentHomeBinding;
 
-import uk.ac.tees.b1498820.wefix.databinding.FragmentSlideshowBinding;
+public class HomeFragment extends Fragment {
 
-public class SlideshowFragment extends Fragment {
-
-    private FragmentSlideshowBinding binding;
+    private FragmentHomeBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SlideshowViewModel slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
 
-        binding = FragmentSlideshowBinding.inflate(inflater, container, false);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textSlideshow;
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textHome;
         return root;
     }
 

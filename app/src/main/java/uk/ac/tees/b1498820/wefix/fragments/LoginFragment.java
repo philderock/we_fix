@@ -63,8 +63,6 @@ public class LoginFragment extends Fragment {
                 validateData();
             }
         });
-
-
     }
 
     private void validateData() {

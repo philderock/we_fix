@@ -7,19 +7,25 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="uk.ac.tees.b1498820.wefix.activities.ui.home.HomeFragment"
+        android:name="uk.ac.tees.b1498820.wefix.fragments.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="uk.ac.tees.b1498820.wefix.activities.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_business"
+        android:name="uk.ac.tees.b1498820.wefix.fragments.BusinessFragment"
+        android:label="@string/menu_my_business"
+        tools:layout="@layout/fragment_business"
+        />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="uk.ac.tees.b1498820.wefix.activities.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_appointment"
+        android:name="uk.ac.tees.b1498820.wefix.fragments.AppointmentFragment"
+        android:label="@string/confirmed_appointments"
+        />
+    <fragment
+        android:id="@+id/nav_transaction"
+        android:name="uk.ac.tees.b1498820.wefix.fragments.TransactionFragment"
+        android:label="@string/appointments_transactions"
+        />
 </navigation>

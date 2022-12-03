@@ -23,4 +23,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="logout">Logout</string>
+    <string name="menu_my_business">My Business</string>
+    <string name="confirmed_appointments">Confirmed Appointments</string>
+    <string name="appointments_transactions">My Bookings &amp; Finance</string>
 </resources>
