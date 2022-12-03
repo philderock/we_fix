@@ -8,6 +8,7 @@ public class User implements Parcelable {
         Id = in.readString();
         Email = in.readString();
         FullName = in.readString();
+        PhoneNumber = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -46,16 +47,25 @@ public class User implements Parcelable {
         FullName = fullName;
     }
 
-    public User(String id, String email, String fullName) {
+    public User(String id, String email, String fullName, String phoneNumber) {
         Id = id;
         Email = email;
         FullName = fullName;
+        PhoneNumber = phoneNumber;
     }
 
     public User() {
     }
 
-    private String Id, Email, FullName;
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        PhoneNumber = phoneNumber;
+    }
+
+    private String Id, Email, FullName, PhoneNumber;
 
     @Override
     public int describeContents() {
@@ -67,5 +77,6 @@ public class User implements Parcelable {
         parcel.writeString(this.Id);
         parcel.writeString(this.Email);
         parcel.writeString(this.FullName);
+        parcel.writeString(this.PhoneNumber);
     }
 }

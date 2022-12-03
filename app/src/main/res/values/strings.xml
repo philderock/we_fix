@@ -26,4 +26,8 @@
     <string name="menu_my_business">My Business</string>
     <string name="confirmed_appointments">Confirmed Appointments</string>
     <string name="appointments_transactions">My Bookings &amp; Finance</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="complete_business_form">Please complete this form to setup a business</string>
+    <string name="business_convincing">Why not set up a business and start earning?</string>
+    <string name="can_provide_service">Can you provide a handy service ?</string>
 </resources>

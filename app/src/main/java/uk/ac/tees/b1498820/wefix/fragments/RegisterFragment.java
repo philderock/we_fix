@@ -110,7 +110,7 @@ public class RegisterFragment extends Fragment {
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                         String email = firebaseUser.getEmail();
                         Toast.makeText(getContext(), "Account created\n"+email, Toast.LENGTH_SHORT).show();
-                        User user = new User(firebaseUser.getUid(), email, binding.etName.getText().toString());
+                        User user = new User(firebaseUser.getUid(), email, binding.etName.getText().toString(), binding.etPhone.getText().toString());
                         databaseReference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
