@@ -2,9 +2,14 @@ package uk.ac.tees.b1498820.wefix.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import uk.ac.tees.b1498820.wefix.R;
 import uk.ac.tees.b1498820.wefix.adapters.AuthenticationPagerAdapter;
@@ -24,18 +29,30 @@ View view;
         view = binding.getRoot();
         setContentView(view);
 
-        viewPager = binding.viewPager;
+        //derive auth information on launch
 
-        AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager(), getLifecycle());
-        pagerAdapter.addFragment(new SplashFragment());
-        pagerAdapter.addFragment(new LoginFragment());
-        pagerAdapter.addFragment(new RegisterFragment());
-        viewPager.setAdapter(pagerAdapter);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
+        //if logged in, display main application part
+        //else display splash and auth pages
+        if (currentUser != null){
+            startActivity(new Intent(MainActivity.this, NavigationActivity.class));
+            finish();
+        }else{
+            viewPager = binding.viewPager;
+
+            AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager(), getLifecycle());
+            pagerAdapter.addFragment(new SplashFragment());
+            pagerAdapter.addFragment(new LoginFragment());
+            pagerAdapter.addFragment(new RegisterFragment());
+            viewPager.setAdapter(pagerAdapter);
 
 //      set handler to run task for specific time interval
-        new Handler().postDelayed(() -> {
-            pagerAdapter.removeFragment(0);
-            viewPager.setAdapter(pagerAdapter);
-        }, 2000);
+            new Handler().postDelayed(() -> {
+                pagerAdapter.removeFragment(0);
+                viewPager.setAdapter(pagerAdapter);
+            }, 2000);
+        }
     }
 }

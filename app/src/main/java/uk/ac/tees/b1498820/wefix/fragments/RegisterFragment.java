@@ -111,6 +111,7 @@ public class RegisterFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         //failure
+                        progressDialog.dismiss();
                         Toast.makeText(getContext(), "Error : "+e.getMessage(), Toast.LENGTH_LONG).show();
 
                     }
