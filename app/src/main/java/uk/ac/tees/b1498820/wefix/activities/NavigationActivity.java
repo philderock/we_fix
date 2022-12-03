@@ -11,6 +11,11 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -24,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import uk.ac.tees.b1498820.wefix.R;
 import uk.ac.tees.b1498820.wefix.databinding.ActivityNavigationBinding;
 import uk.ac.tees.b1498820.wefix.databinding.NavHeaderNavigationBinding;
+import uk.ac.tees.b1498820.wefix.models.User;
 
 public class NavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -31,13 +37,14 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
     private ActivityNavigationBinding binding;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+    NavHeaderNavigationBinding navHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityNavigationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        fetchUserProfile();
 
         setSupportActionBar(binding.appBarNavigation.toolbar);
         binding.appBarNavigation.fab.setOnClickListener(new View.OnClickListener() {
@@ -53,9 +60,9 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         View headerView = navigationView.getHeaderView(0);
-        NavHeaderNavigationBinding navHeader = NavHeaderNavigationBinding.bind(headerView);
+        navHeader = NavHeaderNavigationBinding.bind(headerView);
         navHeader.currentUserEmail.setText(currentUser.getEmail());
-        navHeader.currentUserName.setText("We Fix");
+
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -104,6 +111,24 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
         DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+
+    }
+
+    void fetchUserProfile(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/"+currentUser.getUid());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user = (User) snapshot.getValue(User.class);
+                if (user != null)
+                    navHeader.currentUserName.setText(user.getFullName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 }

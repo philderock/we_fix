@@ -19,16 +19,23 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Locale;
 
 import uk.ac.tees.b1498820.wefix.R;
 import uk.ac.tees.b1498820.wefix.activities.NavigationActivity;
 import uk.ac.tees.b1498820.wefix.databinding.FragmentRegisterBinding;
+import uk.ac.tees.b1498820.wefix.models.User;
 
 public class RegisterFragment extends Fragment {
     FragmentRegisterBinding binding;
     FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
     View view;
     String email = "", password = "";
     ProgressDialog progressDialog;
@@ -47,6 +54,8 @@ public class RegisterFragment extends Fragment {
         super.onCreate(savedInstanceState);
         //initialize firebase
         firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle("Please wait");
         progressDialog.setMessage("Creating your account...");
@@ -101,6 +110,20 @@ public class RegisterFragment extends Fragment {
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                         String email = firebaseUser.getEmail();
                         Toast.makeText(getContext(), "Account created\n"+email, Toast.LENGTH_SHORT).show();
+                        User user = new User(firebaseUser.getUid(), email, binding.etName.getText().toString());
+                        databaseReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                databaseReference.child("users").child(firebaseUser.getUid()).setValue(user);
+                                Toast.makeText(getContext(), "Success disp", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(getContext(), "Error : "+error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                         startActivity(new Intent(getActivity(), NavigationActivity.class));
                         getActivity().finish();
