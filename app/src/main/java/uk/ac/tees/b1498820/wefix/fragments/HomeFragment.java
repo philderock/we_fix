@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import uk.ac.tees.b1498820.wefix.R;
 import uk.ac.tees.b1498820.wefix.adapters.BusinessListAdapter;
 import uk.ac.tees.b1498820.wefix.databinding.FragmentHomeBinding;
 import uk.ac.tees.b1498820.wefix.models.Business;
@@ -35,18 +36,24 @@ public class HomeFragment extends Fragment implements BusinessListAdapter.ItemCl
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fetchBusinesses();
+
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         businessListAdapter = new BusinessListAdapter(getContext(), businesses);
         businessListAdapter.setClickListener(this);
         binding.list.setAdapter(businessListAdapter);
+        fetchBusinesses();
+
+
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = binding.getRoot();
-        return root;
+       if (binding !=null){
+           return binding.getRoot();
+       }else{
+           return inflater.inflate(R.layout.fragment_home, container, false);
+       }
     }
 
     @Override
@@ -56,6 +63,7 @@ public class HomeFragment extends Fragment implements BusinessListAdapter.ItemCl
     }
 
     void fetchBusinesses(){
+        ArrayList<Business> newBusinesses = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("businesses");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,6 +81,8 @@ public class HomeFragment extends Fragment implements BusinessListAdapter.ItemCl
 
             }
         });
+
+
     }
 
     @Override
