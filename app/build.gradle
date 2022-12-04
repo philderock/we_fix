@@ -3,6 +3,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def passwordsPropertiesFile = rootProject.file("app/passwords.properties")
+def passwordsProperties = new Properties()
+passwordsProperties.load(new FileInputStream(passwordsPropertiesFile))
+
 android {
     namespace 'uk.ac.tees.b1498820.wefix'
     compileSdk 32
@@ -16,6 +20,7 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "mapkey", passwordsProperties['mapKey']
     }
 
     buildTypes {

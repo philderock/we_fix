@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeFix"
         tools:targetApi="31">
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBd224X0KqvvAyVsuZZ801psNrgbCLk5A4" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/mapkey" />
         <activity
             android:name=".activities.NavigationActivity"
             android:exported="false"

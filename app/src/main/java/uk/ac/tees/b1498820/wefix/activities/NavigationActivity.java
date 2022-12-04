@@ -49,13 +49,6 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
         fetchUserProfile();
 
         setSupportActionBar(binding.appBarNavigation.toolbar);
-        binding.appBarNavigation.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         ActivityResultLauncher<String[]> locationPermissionRequest =
                 registerForActivityResult(new ActivityResultContracts
