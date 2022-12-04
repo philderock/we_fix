@@ -5,6 +5,7 @@ import static com.sucho.placepicker.Constants.*;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,43 +14,54 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-
 import android.location.Location;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sucho.placepicker.AddressData;
 import com.sucho.placepicker.Constants;
 import com.sucho.placepicker.PlacePicker;
 
+import java.util.ArrayList;
+
+import uk.ac.tees.b1498820.wefix.activities.NavigationActivity;
 import uk.ac.tees.b1498820.wefix.databinding.FragmentBusinessBinding;
+import uk.ac.tees.b1498820.wefix.models.Business;
+import uk.ac.tees.b1498820.wefix.models.User;
 
 public class BusinessFragment extends Fragment {
     FragmentBusinessBinding binding;
-    FirebaseAuth firebaseAuth;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = firebaseAuth.getCurrentUser();
     View view;
     private FusedLocationProviderClient fusedLocationClient;
     private Double myLatitude = Double.valueOf(0);
     private Double myLongitude = Double.valueOf(0);
+    private Business myBusiness = new Business();
+    ProgressDialog progressDialog;
 
     public BusinessFragment() {
         // Required empty public constructor
@@ -68,11 +80,11 @@ public class BusinessFragment extends Fragment {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getContext());
         getCurrentLocation();
-
         //initialize firebase
-        firebaseAuth = FirebaseAuth.getInstance();
+//        firebaseAuth = FirebaseAuth.getInstance();
         //initialize view binding
         binding = FragmentBusinessBinding.inflate(getLayoutInflater());
+        fetchUserBusiness();
 
         binding.etBAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +120,18 @@ public class BusinessFragment extends Fragment {
                 Intent intent = new PlacePicker.IntentBuilder().setLatLong(myLatitude, myLongitude) .build(getActivity());
 
                 startActivityForResult(intent, PLACE_PICKER_REQUEST);
+            }
+        });
+
+        binding.btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressDialog = new ProgressDialog(getContext());
+                progressDialog.setTitle("Please wait");
+                progressDialog.setMessage("Saving your business info...");
+                progressDialog.setCanceledOnTouchOutside(false);
+
+                saveBusiness();
             }
         });
     }
@@ -238,6 +262,69 @@ public class BusinessFragment extends Fragment {
                             Toast.LENGTH_SHORT)
                     .show();
         }
+    }
+
+    void fetchUserBusiness(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("businesses/"+currentUser.getUid());
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Business business = (Business) snapshot.getValue(Business.class);
+                if (business != null && binding != null){
+                    myBusiness = business;
+                    binding.etBName.setText(business.getBusinessName());
+                    binding.etBAddress.setText(business.getAddress());
+                    binding.etBDescription.setText(business.getDescription());
+                    binding.etBTag.setText(business.getServicesTag());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void saveBusiness() {
+        progressDialog.show();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        Business business = new Business(
+                currentUser.getUid(),
+                binding.etBName.getText().toString(),
+                binding.etBDescription.getText().toString(),
+                binding.etBAddress.getText().toString(),
+                binding.etBTag.getText().toString(),
+                "Others",
+                myLatitude,
+                myLongitude
+                );
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                databaseReference.child("businesses").child(currentUser.getUid()).setValue(business);
+                progressDialog.setMessage("Successfully saved profile");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 5000);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.setMessage("Error : "+error.getMessage());
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 5000);
+            }
+        });
     }
 
 }
