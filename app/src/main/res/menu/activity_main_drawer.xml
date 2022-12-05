@@ -7,23 +7,28 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_home" />
+            android:title="Handy men" />
+
+<!--        <item-->
+<!--            android:id="@+id/nav_favorites"-->
+<!--            android:icon="@drawable/ic_menu_gallery"-->
+<!--            android:title="Favorites" />-->
         <item
             android:id="@+id/nav_appointment"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/confirmed_appointments" />
+            android:title="Favorites" />
     </group>
 
     <group android:checkableBehavior="single" android:id="@+id/auth_menu" >
         <item
             android:id="@+id/nav_business"
             android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_my_business" />
+            android:title="My Business Profile" />
 
-        <item
-            android:id="@+id/nav_transaction"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/appointments_transactions" />
+<!--        <item-->
+<!--            android:id="@+id/nav_transaction"-->
+<!--            android:icon="@drawable/ic_menu_manage"-->
+<!--            android:title="@string/appointments_transactions" />-->
 
         <item
             android:id="@+id/nav_signout"

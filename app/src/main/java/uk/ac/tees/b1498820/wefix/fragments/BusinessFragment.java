@@ -276,6 +276,7 @@ public class BusinessFragment extends Fragment {
                     binding.etBAddress.setText(business.getAddress());
                     binding.etBDescription.setText(business.getDescription());
                     binding.etBTag.setText(business.getServicesTag());
+                    binding.etBPhone.setText(business.getPhoneNumber());
                 }
             }
 
@@ -298,7 +299,8 @@ public class BusinessFragment extends Fragment {
                 binding.etBTag.getText().toString(),
                 "Others",
                 myLatitude,
-                myLongitude
+                myLongitude,
+                binding.etBPhone.getText().toString()
                 );
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -306,23 +308,13 @@ public class BusinessFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 databaseReference.child("businesses").child(currentUser.getUid()).setValue(business);
                 progressDialog.setMessage("Successfully saved profile");
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressDialog.dismiss();
-                    }
-                }, 5000);
+                new Handler().postDelayed(() -> progressDialog.dismiss(), 5000);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 progressDialog.setMessage("Error : "+error.getMessage());
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressDialog.dismiss();
-                    }
-                }, 5000);
+                new Handler().postDelayed(() -> progressDialog.dismiss(), 5000);
             }
         });
     }

@@ -4,12 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Business implements Parcelable {
-    private String UserId, BusinessName, Description, Address, ServicesTag, Category;
+    private String UserId, BusinessName, Description, Address, ServicesTag, Category, PhoneNumber;
     private Double Longtitude, Latitude;
 
     public Business(String userId, String businessName, String description,
                     String address, String servicesTag, String category,
-                    Double longtitude, Double latitude) {
+                    Double longtitude, Double latitude, String phoneNumber) {
         UserId = userId;
         BusinessName = businessName;
         Description = description;
@@ -18,6 +18,7 @@ public class Business implements Parcelable {
         Category = category;
         Longtitude = longtitude;
         Latitude = latitude;
+        PhoneNumber = phoneNumber;
     }
     public Business(){}
 
@@ -29,6 +30,7 @@ public class Business implements Parcelable {
         Address = in.readString();
         ServicesTag = in.readString();
         Category = in.readString();
+        PhoneNumber = in.readString();
         if (in.readByte() == 0) {
             Longtitude = null;
         } else {
@@ -39,6 +41,7 @@ public class Business implements Parcelable {
         } else {
             Latitude = in.readDouble();
         }
+
     }
 
     public static final Creator<Business> CREATOR = new Creator<Business>() {
@@ -117,6 +120,14 @@ public class Business implements Parcelable {
         Latitude = latitude;
     }
 
+    public String getPhoneNumber() {
+        return PhoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        PhoneNumber = phoneNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -124,14 +135,16 @@ public class Business implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(this.BusinessName);
-        parcel.writeString(this.Address);
-        parcel.writeString(this.Category);
         parcel.writeString(this.UserId);
-        parcel.writeDouble(this.Latitude);
-        parcel.writeDouble(this.Longtitude);
+        parcel.writeString(this.BusinessName);
         parcel.writeString(this.Description);
+        parcel.writeString(this.Address);
         parcel.writeString(this.ServicesTag);
+        parcel.writeString(this.Category);
+        parcel.writeString(this.PhoneNumber);
+        parcel.writeDouble(this.Longtitude);
+        parcel.writeDouble(this.Latitude);
+
     }
 }
 
