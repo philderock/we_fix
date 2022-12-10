@@ -47,6 +47,8 @@ import com.sucho.placepicker.PlacePicker;
 
 import java.util.ArrayList;
 
+import uk.ac.tees.b1498820.wefix.BuildConfig;
+import uk.ac.tees.b1498820.wefix.R;
 import uk.ac.tees.b1498820.wefix.activities.NavigationActivity;
 import uk.ac.tees.b1498820.wefix.databinding.FragmentBusinessBinding;
 import uk.ac.tees.b1498820.wefix.models.Business;
@@ -117,7 +119,12 @@ public class BusinessFragment extends Fragment {
                                             .ACCESS_COARSE_LOCATION },
                             100);
                 }
-                Intent intent = new PlacePicker.IntentBuilder().setLatLong(myLatitude, myLongitude) .build(getActivity());
+                String aKey = getString(R.string.mapkey);
+                Intent intent = new PlacePicker.IntentBuilder()
+                        .setLatLong(myLatitude, myLongitude)
+                        .setPlaceSearchBar(true, aKey)
+                        .setAddressRequired(true)
+                        .build(getActivity());
 
                 startActivityForResult(intent, PLACE_PICKER_REQUEST);
             }
