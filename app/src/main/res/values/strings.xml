@@ -24,7 +24,7 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="logout">Logout</string>
     <string name="menu_my_business">My Business</string>
-    <string name="confirmed_appointments">Confirmed Appointments</string>
+    <string name="confirmed_appointments">Favorites</string>
     <string name="appointments_transactions">My Bookings &amp; Finance</string>
     <string name="phone_number">Phone Number</string>
     <string name="complete_business_form">Please complete this form to setup a business</string>

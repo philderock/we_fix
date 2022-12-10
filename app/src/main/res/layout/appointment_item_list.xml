@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.AppointmentFragment"
-    tools:listitem="@layout/appointment_item" />
+    tools:listitem="@layout/business_item" />

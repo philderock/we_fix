@@ -66,8 +66,6 @@ public class HomeFragment extends Fragment implements BusinessListAdapter.ItemCl
         fetchBusinesses();
     }
 
-
-
     void fetchBusinesses(){
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         businessListAdapter = new BusinessListAdapter(getContext(), businesses);

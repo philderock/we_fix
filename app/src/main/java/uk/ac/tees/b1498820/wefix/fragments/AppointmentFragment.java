@@ -1,8 +1,11 @@
 package uk.ac.tees.b1498820.wefix.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,61 +15,89 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 import uk.ac.tees.b1498820.wefix.R;
+import uk.ac.tees.b1498820.wefix.activities.BookAppointmentActivity;
+import uk.ac.tees.b1498820.wefix.adapters.BusinessListAdapter;
+import uk.ac.tees.b1498820.wefix.databinding.AppointmentItemListBinding;
+import uk.ac.tees.b1498820.wefix.databinding.FragmentHomeBinding;
 import uk.ac.tees.b1498820.wefix.fragments.placeholder.PlaceholderContent;
+import uk.ac.tees.b1498820.wefix.models.Business;
 
 /**
  * A fragment representing a list of Items.
  */
-public class AppointmentFragment extends Fragment {
+public class AppointmentFragment extends Fragment implements BusinessListAdapter.ItemClickListener {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public AppointmentFragment() {
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static AppointmentFragment newInstance(int columnCount) {
-        AppointmentFragment fragment = new AppointmentFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private AppointmentItemListBinding binding;
+    ArrayList<Business> businesses = new ArrayList<>();
+    BusinessListAdapter businessListAdapter;
+    private final String BUSINESS_INFO = "business_info";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = AppointmentItemListBinding.inflate(getLayoutInflater());
+        fetchBusinesses();
+    }
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        if (binding == null){
+            binding = AppointmentItemListBinding.inflate(getLayoutInflater());
         }
+        return binding.getRoot();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.appointment_item_list, container, false);
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchBusinesses();
+    }
+
+    void fetchBusinesses(){
+        binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
+        businessListAdapter = new BusinessListAdapter(getContext(), businesses);
+        businessListAdapter.setClickListener(this);
+        binding.list.setAdapter(businessListAdapter);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("businesses");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                businesses.clear();
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    Business business = postSnapshot.getValue(Business.class);
+                    businesses.add(business);
+                }
+                businessListAdapter.notifyDataSetChanged();
             }
-            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(PlaceholderContent.ITEMS));
-        }
-        return view;
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent i=new Intent(getContext(), BookAppointmentActivity.class);
+        i.putExtra(BUSINESS_INFO, businesses.get(position));
+        startActivity(i);
+
     }
 }
